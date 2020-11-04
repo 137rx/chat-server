@@ -4,12 +4,25 @@ require("dotenv").config();
 const bodyParser = require("body-parser");
 const app = express();
 const mongodb = require("mongodb");
+const mongoose = require("mongoose");
 const uri = process.env.MONGOLAB_URI;
 const mongoOptions = { useUnifiedTopology: true };
 const client = new mongodb.MongoClient(uri, mongoOptions);
 app.use(cors());
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+mongoose
+  .connect(uri, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useFindAndModify: false
+  })
+  .then(() => {
+    console.log("DB connected");
+  })
+  .catch((err) => console.log(err));
 
 
 app.get("/messages", function (req, res) {
